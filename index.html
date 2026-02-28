@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhishek Kumar | Video Editor & Content Creator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #ff6b35; --dark: #0a0a0a; --gray: #1a1a1a; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--dark); color: white; overflow-x: hidden; }
+        h1, h2, h3, .display-font { font-family: 'Space Grotesk', sans-serif; }
+        .grain-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
+        .hero-text { font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; letter-spacing: -0.02em; }
+        .video-card { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .video-card:hover { transform: translateY(-10px); }
+        .video-card:hover .play-button { transform: scale(1.1); opacity: 1; }
+        .play-button { transition: all 0.3s ease; }
+        .skill-bar { width: 0; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .magnetic-btn { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glitch-text { position: relative; }
+        .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .glitch-text::before { left: 2px; text-shadow: -1px 0 #ff6b35; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+        .glitch-text::after { left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+        @keyframes glitch-anim { 0% { clip: rect(31px, 9999px, 94px, 0); } 20% { clip: rect(76px, 9999px, 19px, 0); } 40% { clip: rect(12px, 9999px, 63px, 0); } 60% { clip: rect(89px, 9999px, 34px, 0); } 80% { clip: rect(43px, 9999px, 72px, 0); } 100% { clip: rect(67px, 9999px, 28px, 0); } }
+        @keyframes glitch-anim2 { 0% { clip: rect(65px, 9999px, 99px, 0); } 20% { clip: rect(23px, 9999px, 45px, 0); } 40% { clip: rect(78px, 9999px, 12px, 0); } 60% { clip: rect(34px, 9999px, 87px, 0); } 80% { clip: rect(56px, 9999px, 23px, 0); } 100% { clip: rect(12px, 9999px, 65px, 0); } }
+        .scroll-indicator { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+        .project-thumbnail { filter: grayscale(100%); transition: filter 0.5s ease; }
+        .video-card:hover .project-thumbnail { filter: grayscale(0%); }
+        .nav-link { position: relative; }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 1px; bottom: -2px; left: 0; background-color: #ff6b35; transition: width 0.3s ease; }
+        .nav-link:hover::after { width: 100%; }
+        .custom-cursor { width: 20px; height: 20px; border: 2px solid #ff6b35; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.2s ease, background-color 0.2s ease; mix-blend-mode: difference; }
+        .custom-cursor.hover { transform: scale(2); background-color: #ff6b35; }
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-500 selection:text-white">
+    <div class="grain-overlay"></div>
+    <div class="custom-cursor hidden md:block"></div>
+    <nav class="fixed top-0 w-full z-40 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold display-font tracking-tighter">AK<span class="text-orange-500">.</span></div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#work" class="nav-link hover:text-orange-500 transition-colors">WORK</a>
+                <a href="#about" class="nav-link hover:text-orange-500 transition-colors">ABOUT</a>
+                <a href="#skills" class="nav-link hover:text-orange-500 transition-colors">SKILLS</a>
+                <a href="#contact" class="nav-link hover:text-orange-500 transition-colors">CONTACT</a>
+            </div>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-black border-t border-white/10">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#work" class="block hover:text-orange-500">WORK</a>
+                <a href="#about" class="block hover:text-orange-500">ABOUT</a>
+                <a href="#skills" class="block hover:text-orange-500">SKILLS</a>
+                <a href="#contact" class="block hover:text-orange-500">CONTACT</a>
+            </div>
+        </div>
+    </nav>
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute top-20 left-10 w-72 h-72 bg-orange-500/20 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 text-center">
+            <div class="mb-6 overflow-hidden">
+                <p class="text-orange-500 font-medium tracking-widest text-sm md:text-base reveal-text">VIDEO EDITOR & CONTENT CREATOR</p>
+            </div>
+            <h1 class="hero-text font-bold mb-8 display-font glitch-text" data-text="ABHISHEK KUMAR">ABHISHEK<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">KUMAR</span></h1>
+            <p class="max-w-2xl mx-auto text-gray-400 text-lg md:text-xl mb-12 leading-relaxed reveal-text">Crafting visual narratives with <span class="text-white font-semibold">repeat value</span>. Specializing in high-impact video editing, motion graphics, and storytelling that engages.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <a href="#work" class="magnetic-btn px-8 py-4 bg-orange-500 text-black font-bold rounded-full hover:bg-orange-400 transition-all transform hover:scale-105 flex items-center gap-2">VIEW MY WORK<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></a>
+                <a href="#contact" class="magnetic-btn px-8 py-4 border border-white/30 rounded-full hover:bg-white/10 transition-all">GET IN TOUCH</a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
+            <div class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center p-2">
+                <div class="w-1 h-3 bg-orange-500 rounded-full animate-bounce"></div>
+            </div>
+        </div>
+    </section>
+    <section id="work" class="py-32 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                <div>
+                    <h2 class="text-5xl md:text-7xl font-bold display-font mb-4">SELECTED<br>WORKS</h2>
+                    <p class="text-gray-400 max-w-md">A curation of my best video editing projects showcasing narrative storytelling and visual impact.</p>
+                </div>
+                <div class="mt-6 md:mt-0"><span class="text-orange-500 font-mono text-sm">01 — 06</span></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="video-card group cursor-pointer" onclick="openProject('project1')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center"><span class="text-6xl">🎬</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">COMMERCIAL</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Brand Storytelling Reel</h3>
+                    <p class="text-gray-400 text-sm">High-energy commercial editing with dynamic transitions and color grading.</p>
+                </div>
+                <div class="video-card group cursor-pointer" onclick="openProject('project2')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-purple-900 to-gray-900 flex items-center justify-center"><span class="text-6xl">🎭</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">DOCUMENTARY</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Cultural Narratives</h3>
+                    <p class="text-gray-400 text-sm">Documentary-style editing focusing on human stories and emotional depth.</p>
+                </div>
+                <div class="video-card group cursor-pointer" onclick="openProject('project3')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-blue-900 to-gray-900 flex items-center justify-center"><span class="text-6xl">🎵</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">MUSIC VIDEO</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Rhythm & Flow</h3>
+                    <p class="text-gray-400 text-sm">Sync-heavy editing with advanced motion graphics and visual effects.</p>
+                </div>
+                <div class="video-card group cursor-pointer" onclick="openProject('project4')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-red-900 to-gray-900 flex items-center justify-center"><span class="text-6xl">📱</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">SOCIAL MEDIA</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Viral Content Series</h3>
+                    <p class="text-gray-400 text-sm">Short-form content optimized for Instagram and TikTok with high retention rates.</p>
+                </div>
+                <div class="video-card group cursor-pointer" onclick="openProject('project5')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-green-900 to-gray-900 flex items-center justify-center"><span class="text-6xl">🏢</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">CORPORATE</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Corporate Identity</h3>
+                    <p class="text-gray-400 text-sm">Professional brand films and company culture videos with clean aesthetics.</p>
+                </div>
+                <div class="video-card group cursor-pointer" onclick="openProject('project6')">
+                    <div class="relative aspect-video bg-gray-900 rounded-lg overflow-hidden mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+                        <div class="project-thumbnail w-full h-full bg-gradient-to-br from-yellow-900 to-gray-900 flex items-center justify-center"><span class="text-6xl">✨</span></div>
+                        <div class="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity"><div class="play-button w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center"><svg class="w-6 h-6 text-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+                        <div class="absolute bottom-4 left-4 z-20"><span class="text-xs font-mono text-orange-500">MOTION GRAPHICS</span></div>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-orange-500 transition-colors">Visual Effects Reel</h3>
+                    <p class="text-gray-400 text-sm">After Effects showcase featuring compositing, tracking, and animation.</p>
+                </div>
+            </div>
+            <div class="mt-16 text-center">
+                <button class="px-8 py-3 border border-white/20 rounded-full hover:bg-white/5 transition-all text-sm font-medium tracking-wider">LOAD MORE PROJECTS</button>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="py-32 bg-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative">
+                    <div class="aspect-[4/5] bg-gradient-to-br from-orange-500/20 to-purple-500/20 rounded-2xl overflow-hidden relative">
+                        <div class="absolute inset-0 flex items-center justify-center text-9xl">👨‍💻</div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 right-8">
+                            <div class="bg-black/80 backdrop-blur-md p-6 rounded-xl border border-white/10">
+                                <p class="text-orange-500 font-mono text-sm mb-2">BASED IN</p>
+                                <p class="text-2xl font-bold">Delhi, India</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 w-24 h-24 border-t-2 border-r-2 border-orange-500/30 rounded-tr-3xl"></div>
+                    <div class="absolute -bottom-4 -left-4 w-24 h-24 border-b-2 border-l-2 border-orange-500/30 rounded-bl-3xl"></div>
+                </div>
+                <div>
+                    <h2 class="text-5xl md:text-6xl font-bold display-font mb-8">STORY<br>FIRST</h2>
+                    <div class="space-y-6 text-gray-300 text-lg leading-relaxed">
+                        <p>I'm Abhishek Kumar, a <span class="text-white font-semibold">Video Editor and Content Creator</span> with a unique background in English Literature from Shaheed Bhagat Singh College, Delhi University.</p>
+                        <p>My approach combines <span class="text-orange-500">narrative storytelling</span> with technical precision. I don't just cut footage—I craft experiences that demand attention and deliver "repeat value."</p>
+                        <p>With professional certification from Ansika Digital Media and expertise in Adobe Premiere Pro, After Effects, and Photoshop, I transform raw footage into compelling visual narratives that resonate with audiences.</p>
+                    </div>
+                    <div class="mt-10 grid grid-cols-2 gap-6">
+                        <div class="border-l-2 border-orange-500 pl-4"><p class="text-3xl font-bold text-white">4+</p><p class="text-gray-400 text-sm">Months Intensive Training</p></div>
+                        <div class="border-l-2 border-orange-500 pl-4"><p class="text-3xl font-bold text-white">100%</p><p class="text-gray-400 text-sm">Commitment to Quality</p></div>
+                    </div>
+                    <div class="mt-10 flex gap-4">
+                        <a href="#contact" class="px-6 py-3 bg-orange-500 text-black font-bold rounded-full hover:bg-orange-400 transition-all">WORK WITH ME</a>
+                        <a href="mailto:abhi19master@gmail.com" class="px-6 py-3 border border-white/20 rounded-full hover:bg-white/5 transition-all flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>EMAIL</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="skills" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl md:text-6xl font-bold display-font mb-6">TECHNICAL<br>ARSENAL</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Proficient in industry-standard tools with a focus on seamless workflow and high-quality output.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    <h3 class="text-2xl font-bold mb-8 flex items-center gap-3"><span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500">01</span>SOFTWARE</h3>
+                    <div class="skill-item"><div class="flex justify-between mb-2"><span class="font-medium">Adobe Premiere Pro</span><span class="text-orange-500">95%</span></div><div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" data-width="95%"></div></div></div>
+                    <div class="skill-item"><div class="flex justify-between mb-2"><span class="font-medium">Adobe After Effects</span><span class="text-orange-500">85%</span></div><div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" data-width="85%"></div></div></div>
+                    <div class="skill-item"><div class="flex justify-between mb-2"><span class="font-medium">Adobe Photoshop</span><span class="text-orange-500">80%</span></div><div class="h-2 bg-gray-800 rounded-full overflow-hidden"><div class="skill-bar h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full" data-width="80%"></div></div></div>
+                </div>
+                <div class="space-y-8">
+                    <h3 class="text-2xl font-bold mb-8 flex items-center gap-3"><span class="w-8 h-8 bg-orange-500/20 rounded-lg flex items-center justify-center text-orange-500">02</span>EXPERTISE</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-orange-500/50 transition-colors"><h4 class="font-bold text-lg mb-2">Narrative Storytelling</h4><p class="text-gray-400 text-sm">Literature background informs editing rhythm and pacing</p></div>
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-orange-500/50 transition-colors"><h4 class="font-bold text-lg mb-2">Motion Graphics</h4><p class="text-gray-400 text-sm">Advanced VFX and visual storytelling techniques</p></div>
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-orange-500/50 transition-colors"><h4 class="font-bold text-lg mb-2">Content Strategy</h4><p class="text-gray-400 text-sm">High-retention content optimized for engagement</p></div>
+                        <div class="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-orange-500/50 transition-colors"><h4 class="font-bold text-lg mb-2">Color Grading</h4><p class="text-gray-400 text-sm">Cinematic color correction and stylistic grading</p></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-24 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-white/10">
+                    <div class="flex items-start justify-between mb-4"><div><p class="text-orange-500 font-mono text-sm mb-1">CERTIFICATION</p><h3 class="text-xl font-bold">Video Editing & Digital Media</h3></div><span class="text-4xl">🎓</span></div>
+                    <p class="text-gray-400 mb-4">Ansika Digital Media • 4 Months Intensive</p>
+                    <ul class="space-y-2 text-sm text-gray-300"><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Advanced Premiere Pro workflows</li><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Motion graphics & VFX</li><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Asset creation & manipulation</li></ul>
+                </div>
+                <div class="bg-gradient-to-br from-gray-900 to-black p-8 rounded-2xl border border-white/10">
+                    <div class="flex items-start justify-between mb-4"><div><p class="text-orange-500 font-mono text-sm mb-1">EDUCATION</p><h3 class="text-xl font-bold">BA (Honors) English</h3></div><span class="text-4xl">📚</span></div>
+                    <p class="text-gray-400 mb-4">Shaheed Bhagat Singh College (DU) • 2024-2025</p>
+                    <ul class="space-y-2 text-sm text-gray-300"><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Narrative structure & storytelling</li><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Cultural studies & communication</li><li class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>Performance & dramatic arts</li></ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="contact" class="py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-orange-500/10 to-transparent"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10 text-center">
+            <h2 class="text-5xl md:text-7xl font-bold display-font mb-8">LET'S CREATE<br>TOGETHER</h2>
+            <p class="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">Ready to bring your vision to life? I'm currently available for freelance projects and collaborations.</p>
+            <div class="flex flex-col md:flex-row gap-6 justify-center mb-16">
+                <a href="mailto:abhi19master@gmail.com" class="group px-8 py-4 bg-orange-500 text-black font-bold rounded-full hover:bg-orange-400 transition-all flex items-center justify-center gap-3 text-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>abhi19master@gmail.com</a>
+                <a href="tel:+919151322745" class="px-8 py-4 border border-white/30 rounded-full hover:bg-white/10 transition-all flex items-center justify-center gap-3 text-lg"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>+91 91513 22745</a>
+            </div>
+            <div class="flex justify-center gap-6 mb-16">
+                <a href="#" class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-black transition-all"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+                <a href="#" class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-black transition-all"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                <a href="#" class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-black transition-all"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                <a href="#" class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-black transition-all"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            </div>
+            <div class="border-t border-white/10 pt-8"><p class="text-gray-500 text-sm">© 2024 Abhishek Kumar. All rights reserved. Designed with passion in Delhi.</p></div>
+        </div>
+    </section>
+    <div id="projectModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeProject()"></div>
+        <div class="relative z-10 h-full flex items-center justify-center p-6">
+            <div class="bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-white/10">
+                <div class="p-6 md:p-8">
+                    <div class="flex justify-between items-start mb-6">
+                        <div><span class="text-orange-500 font-mono text-sm" id="modalCategory">CATEGORY</span><h3 class="text-3xl font-bold mt-2" id="modalTitle">Project Title</h3></div>
+                        <button onclick="closeProject()" class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+                    </div>
+                    <div class="aspect-video bg-black rounded-lg mb-6 flex items-center justify-center border border-white/10"><div class="text-center"><div class="text-6xl mb-4">▶️</div><p class="text-gray-400">Video Player Placeholder</p><p class="text-sm text-gray-600 mt-2">Replace with actual video embed</p></div></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2"><h4 class="font-bold mb-2">About the Project</h4><p class="text-gray-400 leading-relaxed" id="modalDescription">Detailed description of the project goes here.</p></div>
+                        <div><h4 class="font-bold mb-2">Details</h4><ul class="space-y-2 text-sm text-gray-400"><li class="flex justify-between"><span>Client:</span> <span class="text-white">Various</span></li><li class="flex justify-between"><span>Role:</span> <span class="text-white">Video Editor</span></li><li class="flex justify-between"><span>Software:</span> <span class="text-white">Premiere Pro, AE</span></li><li class="flex justify-between"><span>Year:</span> <span class="text-white">2024</span></li></ul></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+        const cursor = document.querySelector('.custom-cursor');
+        const links = document.querySelectorAll('a, button, .video-card');
+        document.addEventListener('mousemove', (e) => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
+        links.forEach(link => { link.addEventListener('mouseenter', () => cursor.classList.add('hover')); link.addEventListener('mouseleave', () => cursor.classList.remove('hover')); });
+        function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+        const projects = { project1: { title: "Brand Storytelling Reel", category: "COMMERCIAL", description: "A high-energy commercial reel showcasing dynamic transitions, color grading, and rhythmic editing. This project demonstrates ability to create compelling brand narratives that capture attention and drive engagement." }, project2: { title: "Cultural Narratives", category: "DOCUMENTARY", description: "Documentary-style editing focusing on human stories and emotional depth. Utilizes literature background to craft narratives that resonate on a deeper level with audiences." }, project3: { title: "Rhythm & Flow", category: "MUSIC VIDEO", description: "Sync-heavy editing with advanced motion graphics and visual effects. Features precise beat matching and creative transitions that enhance the musical experience." }, project4: { title: "Viral Content Series", category: "SOCIAL MEDIA", description: "Short-form content optimized for Instagram and TikTok with high retention rates. Focuses on hook-driven editing and fast-paced storytelling for digital natives." }, project5: { title: "Corporate Identity", category: "CORPORATE", description: "Professional brand films and company culture videos with clean aesthetics. Balances corporate messaging with engaging visual storytelling." }, project6: { title: "Visual Effects Reel", category: "MOTION GRAPHICS", description: "After Effects showcase featuring compositing, tracking, and animation. Demonstrates technical proficiency in creating stunning visual effects and motion graphics." } };
+        function openProject(projectId) { const project = projects[projectId]; document.getElementById('modalTitle').textContent = project.title; document.getElementById('modalCategory').textContent = project.category; document.getElementById('modalDescription').textContent = project.description; document.getElementById('projectModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        function closeProject() { document.getElementById('projectModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        gsap.from(".reveal-text", { y: 100, opacity: 0, duration: 1, stagger: 0.2, ease: "power4.out" });
+        document.querySelectorAll('.skill-bar').forEach(bar => { gsap.to(bar, { width: bar.getAttribute('data-width'), duration: 1.5, ease: "power2.out", scrollTrigger: { trigger: bar, start: "top 80%", toggleActions: "play none none reverse" } }); });
+        gsap.from(".video-card", { y: 50, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out", scrollTrigger: { trigger: "#work", start: "top 70%" } });
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => { anchor.addEventListener('click', function (e) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('mobileMenu').classList.add('hidden'); } }); });
+        document.querySelectorAll('.magnetic-btn').forEach(btn => { btn.addEventListener('mousemove', (e) => { const rect = btn.getBoundingClientRect(); const x = e.clientX - rect.left - rect.width / 2; const y = e.clientY - rect.top - rect.height / 2; btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`; }); btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; }); });
+        window.addEventListener('scroll', () => { const scrolled = window.pageYOffset; const parallax = document.querySelector('.hero-text'); if (parallax) { parallax.style.transform = `translateY(${scrolled * 0.5}px)`; } });
+    </script>
+</body>
+</html>
